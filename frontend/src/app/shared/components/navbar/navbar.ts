@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, Renderer2, inject } from '@angular/core';
+import { Component, computed, OnInit, Renderer2, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -19,8 +19,8 @@ export class NavbarComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.currentTheme = localStorage.getItem('theme') || 'light';
-    this.applyTheme(this.currentTheme);
+    // Sync with the theme that was already applied by the pre-load script
+    this.currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   }
 
   logout(): void {
