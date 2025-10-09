@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/georg/Documents/git/home-management/frontend/src/app/features/profile-settings/**)",
+      "Read(//c/Users/georg/Documents/git/home-management/frontend/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

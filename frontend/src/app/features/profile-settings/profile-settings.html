@@ -1,0 +1,160 @@
+<div class="container mx-auto py-8 px-4 max-w-4xl">
+  <div class="mb-6">
+    <button (click)="goBack()" class="btn btn-ghost gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Dashboard
+    </button>
+  </div>
+
+  <h1 class="text-3xl font-bold mb-8 text-base-content">Profile Settings</h1>
+
+  <!-- Alert Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ successMessage }}</span>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <div class="space-y-6">
+    <!-- Username Update Card -->
+    <div class="card bg-base-100 shadow-xl border border-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-primary mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Update Username
+        </h2>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onUpdateUsername()" class="space-y-4">
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Username</span>
+            </label>
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="Enter new username"
+              class="input input-bordered w-full"
+              [class.input-error]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+            />
+            @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) {
+              <label class="label">
+                @if (profileForm.get('username')?.errors?.['required']) {
+                  <span class="label-text-alt text-error">Username is required</span>
+                }
+                @if (profileForm.get('username')?.errors?.['minlength']) {
+                  <span class="label-text-alt text-error">Username must be at least 3 characters</span>
+                }
+              </label>
+            }
+          </div>
+
+          <div class="card-actions justify-end">
+            <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid">
+              Update Username
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Password Update Card -->
+    <div class="card bg-base-100 shadow-xl border border-base-300">
+      <div class="card-body">
+        <h2 class="card-title text-secondary mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Update Password
+        </h2>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()" class="space-y-4">
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Current Password</span>
+            </label>
+            <input
+              type="password"
+              formControlName="oldPassword"
+              placeholder="Enter current password"
+              class="input input-bordered w-full"
+              [class.input-error]="passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched"
+            />
+            @if (passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched) {
+              <label class="label">
+                <span class="label-text-alt text-error">Current password is required</span>
+              </label>
+            }
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">New Password</span>
+            </label>
+            <input
+              type="password"
+              formControlName="newPassword"
+              placeholder="Enter new password"
+              class="input input-bordered w-full"
+              [class.input-error]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
+            />
+            @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+              <label class="label">
+                @if (passwordForm.get('newPassword')?.errors?.['required']) {
+                  <span class="label-text-alt text-error">New password is required</span>
+                }
+                @if (passwordForm.get('newPassword')?.errors?.['minlength']) {
+                  <span class="label-text-alt text-error">Password must be at least 6 characters</span>
+                }
+              </label>
+            }
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text">Confirm New Password</span>
+            </label>
+            <input
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Confirm new password"
+              class="input input-bordered w-full"
+              [class.input-error]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched"
+            />
+            @if (passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched) {
+              <label class="label">
+                @if (passwordForm.get('confirmPassword')?.errors?.['required']) {
+                  <span class="label-text-alt text-error">Password confirmation is required</span>
+                }
+                @if (passwordForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+                  <span class="label-text-alt text-error">Passwords do not match</span>
+                }
+              </label>
+            }
+          </div>
+
+          <div class="card-actions justify-end">
+            <button type="submit" class="btn btn-secondary" [disabled]="passwordForm.invalid">
+              Update Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

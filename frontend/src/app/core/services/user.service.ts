@@ -14,4 +14,11 @@ export class UserService {
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.API_URL);
   }
+
+  updatePassword(oldPassword: string, newPassword: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/password`, {
+      oldPassword,
+      newPassword
+    });
+  }
 }
