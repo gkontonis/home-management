@@ -65,19 +65,19 @@
   <div class="stats shadow-xl mt-8 bg-base-100 max-w-6xl mx-auto border border-base-300">
     <div class="stat place-items-center">
       <div class="stat-title">Tasks Pending</div>
-      <div class="stat-value text-primary">-</div>
+      <div class="stat-value text-primary">{{ pendingCount() }}</div>
       <div class="stat-desc">Awaiting action</div>
     </div>
 
     <div class="stat place-items-center">
       <div class="stat-title">In Progress</div>
-      <div class="stat-value text-secondary">-</div>
+      <div class="stat-value text-secondary">{{ inProgressCount() }}</div>
       <div class="stat-desc">Currently working</div>
     </div>
 
     <div class="stat place-items-center">
       <div class="stat-title">Completed</div>
-      <div class="stat-value text-accent">-</div>
+      <div class="stat-value text-accent">{{ completedCount() }}</div>
       <div class="stat-desc">All done!</div>
     </div>
   </div>
