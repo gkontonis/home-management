@@ -1,1 +1,27 @@
-<p>dashboard works!</p>
+<app-navbar></app-navbar>
+
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+      <div class="card-body">
+        <h2 class="card-title">My Todos</h2>
+        <p>View and manage your assigned tasks</p>
+        <div class="card-actions justify-end">
+          <a routerLink="/todos" class="btn btn-primary">View Todos</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+      <div class="card-body">
+        <h2 class="card-title">Statistics</h2>
+        <p>View your productivity stats</p>
+        <div class="card-actions justify-end">
+          <button class="btn btn-secondary" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

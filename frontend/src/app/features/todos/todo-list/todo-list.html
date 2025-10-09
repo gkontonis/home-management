@@ -1,1 +1,189 @@
-<p>todo-list works!</p>
+<app-navbar></app-navbar>
+
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">My Todos</h1>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      + New Todo
+    </button>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="tabs tabs-boxed mb-6">
+    <button
+      class="tab"
+      [class.tab-active]="filter() === 'all'"
+      (click)="filter.set('all')"
+    >
+      All ({{ filteredTodos().length }})
+    </button>
+    <button
+      class="tab"
+      [class.tab-active]="filter() === 'PENDING'"
+      (click)="filter.set('PENDING')"
+    >
+      Pending ({{ countByStatus('PENDING') }})
+    </button>
+    <button
+      class="tab"
+      [class.tab-active]="filter() === 'IN_PROGRESS'"
+      (click)="filter.set('IN_PROGRESS')"
+    >
+      In Progress ({{ countByStatus('IN_PROGRESS') }})
+    </button>
+    <button
+      class="tab"
+      [class.tab-active]="filter() === 'COMPLETED'"
+      (click)="filter.set('COMPLETED')"
+    >
+      Completed ({{ countByStatus('COMPLETED') }})
+    </button>
+  </div>
+
+  <!-- Todo List -->
+  <div class="grid gap-4">
+    @for (todo of filteredTodos(); track todo.id) {
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h2 class="card-title">{{ todo.title }}</h2>
+              <p class="text-sm opacity-70 mt-2">{{ todo.description }}</p>
+
+              <div class="flex gap-2 mt-4">
+                <span class="badge" [ngClass]="getStatusClass(todo.status)">
+                  {{ todo.status }}
+                </span>
+                <span class="badge badge-outline">{{ todo.category }}</span>
+                @if (todo.dueDate) {
+                  <span class="badge badge-ghost">Due: {{ formatDate(todo.dueDate) }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="dropdown dropdown-end">
+              <label tabindex="0" class="btn btn-ghost btn-sm">⋮</label>
+              <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a (click)="openEditModal(todo)">Edit</a></li>
+                <li><a (click)="deleteTodo(todo.id!)" class="text-error">Delete</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="text-center py-12">
+        <p class="text-lg opacity-70">No todos found</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Create/Edit Modal -->
+@if (showModal()) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">
+        {{ isEditing() ? 'Edit Todo' : 'Create New Todo' }}
+      </h3>
+
+      <form (ngSubmit)="saveTodo()">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Title</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="currentTodo.title"
+            name="title"
+            class="input input-bordered"
+            required
+          />
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Description</span>
+          </label>
+          <textarea
+            [(ngModel)]="currentTodo.description"
+            name="description"
+            class="textarea textarea-bordered"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Status</span>
+          </label>
+          <select
+            [(ngModel)]="currentTodo.status"
+            name="status"
+            class="select select-bordered"
+          >
+            <option value="PENDING">Pending</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Category</span>
+          </label>
+          <select
+            [(ngModel)]="currentTodo.category"
+            name="category"
+            class="select select-bordered"
+          >
+            <option value="HOUSEHOLD">Household</option>
+            <option value="MAINTENANCE">Maintenance</option>
+            <option value="GARDEN">Garden</option>
+            <option value="CLEANING">Cleaning</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Due Date (Optional)</span>
+          </label>
+          <input
+            type="date"
+            [(ngModel)]="currentTodo.dueDate"
+            name="dueDate"
+            class="input input-bordered"
+          />
+        </div>
+
+        @if (!isEditing()) {
+          <div class="form-control mt-4">
+            <label class="label">
+              <span class="label-text">Assign To</span>
+            </label>
+            <select
+              [(ngModel)]="currentTodo.assignedToId"
+              name="assignedToId"
+              class="select select-bordered"
+              required
+            >
+              <option [value]="null" disabled>Select user</option>
+              @for (user of users(); track user.id) {
+                <option [value]="user.id">{{ user.username }}</option>
+              }
+            </select>
+          </div>
+        }
+
+        <div class="modal-action">
+          <button type="button" class="btn" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            {{ isEditing() ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-backdrop" (click)="closeModal()"></div>
+  </div>
+}
