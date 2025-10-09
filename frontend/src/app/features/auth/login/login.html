@@ -1,0 +1,62 @@
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+  <div class="card w-96 bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title justify-center text-2xl mb-4">Home Management</h2>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error">
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Username</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="credentials.username"
+            name="username"
+            placeholder="Enter username"
+            class="input input-bordered"
+            required
+          />
+        </div>
+
+        <div class="form-control mt-4">
+          <label class="label">
+            <span class="label-text">Password</span>
+          </label>
+          <input
+            type="password"
+            [(ngModel)]="credentials.password"
+            name="password"
+            placeholder="Enter password"
+            class="input input-bordered"
+            required
+          />
+        </div>
+
+        <div class="form-control mt-6">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <span class="loading loading-spinner"></span>
+            }
+            Login
+          </button>
+        </div>
+      </form>
+
+      <div class="divider">Demo Credentials</div>
+      <div class="text-sm text-center opacity-70">
+        Username: admin<br/>
+        Password: admin123
+      </div>
+    </div>
+  </div>
+</div>
