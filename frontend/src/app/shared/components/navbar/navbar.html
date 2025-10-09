@@ -3,16 +3,7 @@
     <a routerLink="/dashboard" class="btn btn-ghost text-xl">Home Management</a>
   </div>
   <div class="flex-none gap-2">
-    <select class="select select-bordered select-sm mr-4"
-            (change)="changeTheme($event)">
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-      <option value="cupcake">Cupcake</option>
-      <option value="bumblebee">Bumblebee</option>
-      <option value="emerald">Emerald</option>
-      <option value="corporate">Corporate</option>
-      <!-- Add more DaisyUI themes as desired -->
-    </select>
+    <app-theme-switcher></app-theme-switcher>
     <span class="mr-4">Welcome, {{ username() }}</span>
     <button class="btn btn-ghost btn-sm" (click)="logout()">
       Logout

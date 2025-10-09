@@ -2,11 +2,12 @@ import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { ThemeSwitcherComponent as ThemeSwitcher } from '../../../components/theme-switcher/theme-switcher';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ThemeSwitcher],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
