@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar';
 import { TodoService } from '../../../core/services/todo.service';
 import { UserService } from '../../../core/services/user.service';
 import { Todo, TodoStatus, TodoCategory } from '../../../core/models/todo.model';
@@ -10,7 +9,7 @@ import { User } from '../../../core/models/user.model';
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.css'
 })

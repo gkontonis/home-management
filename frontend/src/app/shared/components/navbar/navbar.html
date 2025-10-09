@@ -1,12 +1,23 @@
-<div class="navbar bg-primary text-primary-content">
+<div class="navbar bg-primary text-primary-content shadow-lg">
   <div class="flex-1">
-    <a routerLink="/dashboard" class="btn btn-ghost text-xl">Home Management</a>
+    <a [routerLink]="isAuthenticated() ? '/dashboard' : '/login'" class="btn btn-ghost text-xl">
+      Home Management
+    </a>
   </div>
   <div class="flex-none gap-2">
-    <app-theme-switcher></app-theme-switcher>
-    <span class="mr-4">Welcome, {{ username() }}</span>
-    <button class="btn btn-ghost btn-sm" (click)="logout()">
-      Logout
-    </button>
+    <input
+      type="checkbox"
+      value="synthwave"
+      class="toggle theme-controller"
+      (change)="onThemeChange($event)"
+      [checked]="currentTheme === 'synthwave'"
+      aria-label="Toggle theme"
+    />
+    @if (isAuthenticated()) {
+      <span class="mr-4">Welcome, {{ username() }}</span>
+      <button class="btn btn-ghost btn-sm" (click)="logout()">
+        Logout
+      </button>
+    }
   </div>
 </div>

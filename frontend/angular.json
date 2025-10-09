@@ -82,7 +82,7 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/output.css"
             ]
           }
         }
