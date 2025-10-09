@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class LoginComponent {
   credentials: AuthRequest = {
     username: '',
     password: '',

@@ -14,7 +14,7 @@ import { User } from '../../../core/models/user.model';
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.css'
 })
-export class TodoList implements OnInit {
+export class TodoListComponent implements OnInit {
   filter = signal<string | TodoStatus>('all');
   showModal = signal(false);
   isEditing = signal(false);
