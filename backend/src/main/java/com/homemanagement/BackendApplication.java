@@ -19,18 +19,19 @@ public class BackendApplication {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            // Delete existing admin to avoid conflicts
-            userRepository.findByUsername("admin").ifPresent(userRepository::delete);
-            
-            // Create fresh admin user with correct password
-            User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setEmail("admin@home.com");
-            admin.setRoles(Set.of("ROLE_ADMIN", "ROLE_USER"));
-            
-            userRepository.save(admin);
-            System.out.println("✓ Admin user created with password: admin123");
+            // Only create admin if it doesn't exist
+            if (userRepository.findByUsername("admin").isEmpty()) {
+                User admin = new User();
+                admin.setUsername("admin");
+                admin.setPassword(passwordEncoder.encode("admin123"));
+                admin.setEmail("admin@home.com");
+                admin.setRoles(Set.of("ROLE_ADMIN", "ROLE_USER"));
+                
+                userRepository.save(admin);
+                System.out.println("✓ Admin user created with password: admin123");
+            } else {
+                System.out.println("✓ Admin user already exists");
+            }
         };
     }
 }
