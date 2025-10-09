@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrl: './navbar.css',
 })
 export class NavbarComponent {
   username = computed(() => this.authService.currentUser() || 'User');
@@ -17,5 +17,10 @@ export class NavbarComponent {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  changeTheme(event: Event) {
+    const theme = (event.target as HTMLSelectElement).value;
+    document.documentElement.setAttribute('data-theme', theme);
   }
 }
