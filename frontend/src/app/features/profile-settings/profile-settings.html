@@ -11,21 +11,21 @@
   <h1 class="text-3xl font-bold mb-8 text-base-content">Profile Settings</h1>
 
   <!-- Alert Messages -->
-  @if (successMessage) {
+  @if (successMessage()) {
     <div class="alert alert-success mb-6">
       <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span>{{ successMessage }}</span>
+      <span>{{ successMessage() }}</span>
     </div>
   }
 
-  @if (errorMessage) {
+  @if (errorMessage()) {
     <div class="alert alert-error mb-6">
       <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span>{{ errorMessage }}</span>
+      <span>{{ errorMessage() }}</span>
     </div>
   }
 
@@ -83,7 +83,7 @@
           Update Password
         </h2>
 
-        <form [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()" class="space-y-4">
+        <form [formGroup]="passwordForm" class="space-y-4" autocomplete="off">
           <div class="form-control w-full">
             <label class="label">
               <span class="label-text">Current Password</span>
@@ -93,6 +93,7 @@
               formControlName="oldPassword"
               placeholder="Enter current password"
               class="input input-bordered w-full"
+              autocomplete="current-password"
               [class.input-error]="passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched"
             />
             @if (passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched) {
@@ -111,6 +112,7 @@
               formControlName="newPassword"
               placeholder="Enter new password"
               class="input input-bordered w-full"
+              autocomplete="new-password"
               [class.input-error]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
             />
             @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
@@ -134,6 +136,7 @@
               formControlName="confirmPassword"
               placeholder="Confirm new password"
               class="input input-bordered w-full"
+              autocomplete="new-password"
               [class.input-error]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched"
             />
             @if (passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched) {
@@ -149,7 +152,7 @@
           </div>
 
           <div class="card-actions justify-end">
-            <button type="submit" class="btn btn-secondary" [disabled]="passwordForm.invalid">
+            <button type="button" class="btn btn-secondary" [disabled]="passwordForm.invalid" (click)="onUpdatePassword()">
               Update Password
             </button>
           </div>
@@ -158,3 +161,14 @@
     </div>
   </div>
 </div>
+
+<!-- Confirmation Dialog for Password Update -->
+<app-confirmation-dialog
+  [isOpen]="showPasswordConfirmDialog()"
+  title="Confirm Password Update"
+  message="Are you sure you want to update your password? You will need to use the new password for your next login."
+  confirmText="Update Password"
+  confirmButtonClass="btn-secondary"
+  (confirmed)="confirmPasswordUpdate()"
+  (cancelled)="cancelPasswordUpdate()">
+</app-confirmation-dialog>

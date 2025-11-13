@@ -6,11 +6,12 @@ import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Todo, TodoStatus, TodoCategory } from '../../../core/models/todo.model';
 import { User } from '../../../core/models/user.model';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConfirmationDialogComponent],
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.css'
 })
@@ -23,6 +24,15 @@ export class TodoListComponent implements OnInit {
   // Admin-specific features
   viewMode = signal<'my' | 'all'>('my');
   isAdmin = computed(() => this.authService.isAdmin());
+
+  // Delete confirmation
+  showDeleteDialog = signal(false);
+  todoToDelete = signal<Todo | null>(null);
+  deleteMessage = computed(() => {
+    const todo = this.todoToDelete();
+    const title = todo?.title || 'this todo';
+    return `Are you sure you want to delete "${title}"? This action cannot be undone.`;
+  });
 
   currentTodo: Todo = this.getEmptyTodo();
 
@@ -98,10 +108,30 @@ export class TodoListComponent implements OnInit {
     }
   }
 
-  deleteTodo(id: number): void {
-    if (confirm('Are you sure you want to delete this todo?')) {
-      this.todoService.deleteTodo(id).subscribe();
+  deleteTodo(todo: Todo): void {
+    this.todoToDelete.set(todo);
+    this.showDeleteDialog.set(true);
+  }
+
+  confirmDelete(): void {
+    const todo = this.todoToDelete();
+    if (todo && todo.id) {
+      this.todoService.deleteTodo(todo.id).subscribe({
+        next: () => {
+          this.showDeleteDialog.set(false);
+          this.todoToDelete.set(null);
+        },
+        error: () => {
+          this.showDeleteDialog.set(false);
+          this.todoToDelete.set(null);
+        }
+      });
     }
+  }
+
+  cancelDelete(): void {
+    this.showDeleteDialog.set(false);
+    this.todoToDelete.set(null);
   }
 
   countByStatus(status: TodoStatus): number {
