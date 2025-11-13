@@ -19,6 +19,9 @@
     ]
   },
   "private": true,
+  "overrides": {
+    "vite": "^7.2.2"
+  },
   "dependencies": {
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
