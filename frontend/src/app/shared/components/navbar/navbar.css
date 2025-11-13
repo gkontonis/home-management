@@ -1,0 +1,44 @@
+/* Smooth theme transitions */
+:root {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Theme dropdown enhancements */
+.dropdown-content {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Theme option hover effects */
+.menu li a {
+  transition: all 0.2s ease;
+}
+
+.menu li a:hover {
+  transform: translateX(4px);
+}
+
+.menu li a.active {
+  background-color: hsl(var(--p) / 0.2) !important;
+  border-left: 3px solid hsl(var(--p));
+  font-weight: 600;
+}
+
+/* Smooth navbar transitions */
+.navbar {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}

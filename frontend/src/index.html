@@ -7,9 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script>
-    // Apply theme before Angular loads to prevent flash
-    const theme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', theme);
+    // Apply theme before Angular loads to prevent flash of unstyled content (FOUC)
+    (function() {
+      const validThemes = ['light', 'dark', 'night', 'forest', 'dracula', 'synthwave'];
+      const storedTheme = localStorage.getItem('theme');
+      const theme = validThemes.includes(storedTheme) ? storedTheme : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
   </script>
 </head>
 <body>

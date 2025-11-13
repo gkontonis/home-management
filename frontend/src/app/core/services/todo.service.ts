@@ -7,7 +7,7 @@ import { Todo } from '../models/todo.model';
   providedIn: 'root'
 })
 export class TodoService {
-  private readonly API_URL = 'http://localhost:8080/api/todos';
+  private readonly API_URL = 'http://localhost:8081/api/todos';
 
   // Signal for reactive todo list
   todos = signal<Todo[]>([]);

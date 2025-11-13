@@ -1,6 +1,7 @@
 package com.homemanagement.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import com.homemanagement.domain.Todo;
 import com.homemanagement.dto.TodoDto;
 import java.time.LocalDate;
@@ -8,14 +9,10 @@ import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
 public interface TodoMapper {
+  @Mapping(target = "assignedTo", ignore = true)
   Todo toEntity(TodoDto dto);
-  TodoDto toDto(Todo entity);
 
-  // Help MapStruct convert between LocalDate and LocalDateTime
-  default LocalDateTime map(LocalDate date) {
-    return date != null ? date.atStartOfDay() : null;
-  }
-  default LocalDate map(LocalDateTime dateTime) {
-    return dateTime != null ? dateTime.toLocalDate() : null;
-  }
+  @Mapping(target = "assignedToId", source = "assignedTo.id")
+  @Mapping(target = "assignedToUsername", source = "assignedTo.username")
+  TodoDto toDto(Todo entity);
 }

@@ -20,6 +20,7 @@ public class BackendApplication {
     CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             // Only create admin if it doesn't exist
+            //TODO: Remove hardcoded password in production
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User();
                 admin.setUsername("admin");
