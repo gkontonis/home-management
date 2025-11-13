@@ -2,6 +2,7 @@ import { Component, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TodoService } from '../../../core/services/todo.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { TodoStatus } from '../../../core/models/todo.model';
 
 @Component({
@@ -25,7 +26,14 @@ export class DashboardComponent implements OnInit {
     this.todoService.todos().filter(t => t.status === 'COMPLETED').length
   );
 
-  constructor(private todoService: TodoService) {}
+  // Check if user is admin
+  isAdmin = computed(() => this.authService.isAdmin());
+  username = computed(() => this.authService.username());
+
+  constructor(
+    private todoService: TodoService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     // Load todos when dashboard loads

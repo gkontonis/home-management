@@ -1,4 +1,15 @@
 <div class="container mx-auto py-8 px-4">
+  <!-- Welcome Header -->
+  <div class="mb-8 max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold mb-2">
+      Welcome, {{ username() }}!
+      @if (isAdmin()) {
+        <span class="badge badge-success badge-lg ml-2">ADMIN</span>
+      }
+    </h1>
+    <p class="text-base-content/70">Here's an overview of your tasks and account</p>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
     <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 border-2 border-primary">
       <div class="card-body">

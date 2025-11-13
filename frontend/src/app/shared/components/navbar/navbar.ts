@@ -12,11 +12,12 @@ import { ThemeService, type Theme } from '../../../core/services/theme.service';
   styleUrl: './navbar.css',
 })
 export class NavbarComponent {
-  username = computed(() => this.authService.currentUser() || 'User');
-  isAuthenticated = computed(() => !!this.authService.currentUser());
+  username = computed(() => this.authService.username() || 'User');
+  isAuthenticated = computed(() => this.authService.isAuthenticated());
+  isAdmin = computed(() => this.authService.isAdmin());
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     public themeService: ThemeService
   ) {}
 

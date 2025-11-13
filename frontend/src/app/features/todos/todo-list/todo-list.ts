@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TodoService } from '../../../core/services/todo.service';
 import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Todo, TodoStatus, TodoCategory } from '../../../core/models/todo.model';
 import { User } from '../../../core/models/user.model';
 
@@ -19,6 +20,10 @@ export class TodoListComponent implements OnInit {
   isEditing = signal(false);
   users = signal<User[]>([]);
 
+  // Admin-specific features
+  viewMode = signal<'my' | 'all'>('my');
+  isAdmin = computed(() => this.authService.isAdmin());
+
   currentTodo: Todo = this.getEmptyTodo();
 
   filteredTodos = computed(() => {
@@ -34,7 +39,8 @@ export class TodoListComponent implements OnInit {
 
   constructor(
     public todoService: TodoService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -43,11 +49,23 @@ export class TodoListComponent implements OnInit {
   }
 
   loadTodos(): void {
-    this.todoService.getMyTodos().subscribe();
+    const mode = this.viewMode();
+
+    if (mode === 'all' && this.isAdmin()) {
+      this.todoService.getAllTodos().subscribe();
+    } else {
+      this.todoService.getMyTodos().subscribe();
+    }
+  }
+
+  toggleViewMode(): void {
+    const newMode = this.viewMode() === 'my' ? 'all' : 'my';
+    this.viewMode.set(newMode);
+    this.loadTodos();
   }
 
   loadUsers(): void {
-    this.userService.getAllUsers().subscribe({
+    this.userService.getAssignableUsers().subscribe({
       next: (users) => this.users.set(users)
     });
   }

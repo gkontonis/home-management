@@ -1,0 +1,165 @@
+<div class="container mx-auto p-6 max-w-2xl">
+  <div class="flex items-center mb-6">
+    <button (click)="cancel()" class="btn btn-ghost btn-sm mr-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    <h1 class="text-3xl font-bold">Create New User</h1>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-error mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <!-- Username -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text">Username <span class="text-error">*</span></span>
+          </label>
+          <input
+            type="text"
+            formControlName="username"
+            class="input input-bordered w-full"
+            [class.input-error]="username?.invalid && username?.touched"
+            placeholder="Enter username (3-20 characters, alphanumeric)"
+          />
+          @if (username?.invalid && username?.touched) {
+            <label class="label">
+              @if (username?.errors?.['required']) {
+                <span class="label-text-alt text-error">Username is required</span>
+              }
+              @if (username?.errors?.['minlength']) {
+                <span class="label-text-alt text-error">Username must be at least 3 characters</span>
+              }
+              @if (username?.errors?.['maxlength']) {
+                <span class="label-text-alt text-error">Username cannot exceed 20 characters</span>
+              }
+              @if (username?.errors?.['pattern']) {
+                <span class="label-text-alt text-error">Username can only contain letters, numbers, and underscores</span>
+              }
+            </label>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text">Email <span class="text-error">*</span></span>
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            class="input input-bordered w-full"
+            [class.input-error]="email?.invalid && email?.touched"
+            placeholder="Enter email address"
+          />
+          @if (email?.invalid && email?.touched) {
+            <label class="label">
+              @if (email?.errors?.['required']) {
+                <span class="label-text-alt text-error">Email is required</span>
+              }
+              @if (email?.errors?.['email']) {
+                <span class="label-text-alt text-error">Please enter a valid email address</span>
+              }
+            </label>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text">Password <span class="text-error">*</span></span>
+            @if (password?.value) {
+              <span class="label-text-alt {{getPasswordStrengthClass()}}">
+                Strength: {{ getPasswordStrength() }}
+              </span>
+            }
+          </label>
+          <input
+            type="password"
+            formControlName="password"
+            class="input input-bordered w-full"
+            [class.input-error]="password?.invalid && password?.touched"
+            placeholder="Enter password (minimum 8 characters)"
+          />
+          @if (password?.invalid && password?.touched) {
+            <label class="label">
+              @if (password?.errors?.['required']) {
+                <span class="label-text-alt text-error">Password is required</span>
+              }
+              @if (password?.errors?.['minlength']) {
+                <span class="label-text-alt text-error">Password must be at least 8 characters</span>
+              }
+            </label>
+          }
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text">Confirm Password <span class="text-error">*</span></span>
+          </label>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            class="input input-bordered w-full"
+            [class.input-error]="(confirmPassword?.invalid && confirmPassword?.touched) || (userForm.errors?.['passwordMismatch'] && confirmPassword?.touched)"
+            placeholder="Re-enter password"
+          />
+          @if (userForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
+            <label class="label">
+              <span class="label-text-alt text-error">Passwords do not match</span>
+            </label>
+          }
+        </div>
+
+        <!-- Role -->
+        <div class="form-control w-full mt-4">
+          <label class="label">
+            <span class="label-text">Role</span>
+          </label>
+          <label class="cursor-pointer label justify-start">
+            <input
+              type="checkbox"
+              formControlName="isAdmin"
+              class="checkbox checkbox-primary mr-3"
+            />
+            <span class="label-text">Grant Admin Privileges</span>
+          </label>
+          <label class="label">
+            <span class="label-text-alt">Admin users can manage other users and access all features</span>
+          </label>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="card-actions justify-end mt-6">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="btn btn-ghost"
+            [disabled]="loading()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <span class="loading loading-spinner"></span>
+            }
+            Create User
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

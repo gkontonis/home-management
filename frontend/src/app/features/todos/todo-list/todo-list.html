@@ -1,15 +1,41 @@
 <div class="container mx-auto p-6">
   <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
     <div>
-      <h1 class="text-4xl font-bold text-primary">My Todos</h1>
-      <p class="text-base-content/70 mt-2">Manage your tasks and stay organized</p>
+      <h1 class="text-4xl font-bold text-primary">
+        @if (viewMode() === 'my') { My Todos }
+        @else { All Todos }
+      </h1>
+      <p class="text-base-content/70 mt-2">
+        @if (viewMode() === 'my') { Manage your tasks and stay organized }
+        @else { View and manage all users' tasks }
+      </p>
     </div>
-    <button class="btn btn-primary btn-lg gap-2" (click)="openCreateModal()">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-      New Todo
-    </button>
+    <div class="flex gap-2">
+      @if (isAdmin()) {
+        <button
+          class="btn btn-outline gap-2"
+          (click)="toggleViewMode()"
+        >
+          @if (viewMode() === 'my') {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+            </svg>
+            View All Tasks
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            View My Tasks
+          }
+        </button>
+      }
+      <button class="btn btn-primary btn-lg gap-2" (click)="openCreateModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Todo
+      </button>
+    </div>
   </div>
 
   <!-- Filter Tabs -->

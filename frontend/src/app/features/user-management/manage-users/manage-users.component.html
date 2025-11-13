@@ -1,0 +1,215 @@
+<div class="container mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Manage Users</h1>
+    <a routerLink="/create-user" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+      </svg>
+      Create New User
+    </a>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="mb-4">
+    <input
+      type="text"
+      placeholder="Search by username, email, or role..."
+      class="input input-bordered w-full max-w-md"
+      [value]="searchTerm()"
+      (input)="searchTerm.set($any($event.target).value); filterUsers()"
+    />
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="flex justify-center items-center h-64">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  }
+
+  <!-- Users Table -->
+  @if (!loading() && filteredUsers().length > 0) {
+    <div class="overflow-x-auto">
+      <table class="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Todos</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of filteredUsers(); track user.id) {
+            <tr>
+              <td class="font-semibold">{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                @for (role of user.roles; track role) {
+                  <span class="badge {{getRoleBadgeClass(role)}} mr-1">
+                    {{ getRoleDisplay(role) }}
+                  </span>
+                }
+              </td>
+              <td>{{ user.todoCount }}</td>
+              <td>{{ formatDate(user.createdAt) }}</td>
+              <td>
+                <div class="flex gap-2">
+                  <a
+                    [routerLink]="['/users', user.id, 'dashboard']"
+                    class="btn btn-sm btn-outline"
+                    title="View Dashboard"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                  <button
+                    (click)="openEditModal(user)"
+                    class="btn btn-sm btn-outline"
+                    title="Edit User"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="openResetPasswordModal(user)"
+                    class="btn btn-sm btn-outline"
+                    title="Reset Password"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="openDeleteModal(user)"
+                    class="btn btn-sm btn-error btn-outline"
+                    title="Delete User"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- No Users Found -->
+  @if (!loading() && filteredUsers().length === 0) {
+    <div class="alert alert-info">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <span>No users found matching your search criteria.</span>
+    </div>
+  }
+</div>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal()) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Confirm Delete</h3>
+      <p class="py-4">
+        Are you sure you want to delete user <strong>{{ selectedUser()?.username }}</strong>?
+        This action cannot be undone.
+      </p>
+      <div class="modal-action">
+        <button (click)="closeDeleteModal()" class="btn">Cancel</button>
+        <button (click)="confirmDelete()" class="btn btn-error">Delete</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Edit User Modal -->
+@if (showEditModal() && selectedUser()) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Edit User: {{ selectedUser()?.username }}</h3>
+      <div class="form-control w-full mt-4">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+        <input
+          type="email"
+          [value]="editEmail()"
+          (input)="editEmail.set($any($event.target).value)"
+          class="input input-bordered w-full"
+        />
+      </div>
+      <div class="form-control w-full mt-4">
+        <label class="label">
+          <span class="label-text">Roles</span>
+        </label>
+        <div class="flex gap-4">
+          <label class="cursor-pointer label">
+            <input
+              type="checkbox"
+              [checked]="hasRole('ROLE_USER')"
+              (change)="toggleRole('ROLE_USER')"
+              class="checkbox checkbox-primary mr-2"
+            />
+            <span class="label-text">User</span>
+          </label>
+          <label class="cursor-pointer label">
+            <input
+              type="checkbox"
+              [checked]="hasRole('ROLE_ADMIN')"
+              (change)="toggleRole('ROLE_ADMIN')"
+              class="checkbox checkbox-primary mr-2"
+            />
+            <span class="label-text">Admin</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-action">
+        <button (click)="closeEditModal()" class="btn">Cancel</button>
+        <button (click)="saveEdit()" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Reset Password Modal -->
+@if (showResetPasswordModal() && selectedUser()) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Reset Password: {{ selectedUser()?.username }}</h3>
+      <div class="form-control w-full mt-4">
+        <label class="label">
+          <span class="label-text">New Password</span>
+        </label>
+        <input
+          type="password"
+          [value]="newPassword()"
+          (input)="newPassword.set($any($event.target).value)"
+          class="input input-bordered w-full"
+          placeholder="Minimum 8 characters"
+        />
+      </div>
+      <div class="form-control w-full mt-4">
+        <label class="label">
+          <span class="label-text">Confirm Password</span>
+        </label>
+        <input
+          type="password"
+          [value]="confirmPassword()"
+          (input)="confirmPassword.set($any($event.target).value)"
+          class="input input-bordered w-full"
+        />
+      </div>
+      <div class="modal-action">
+        <button (click)="closeResetPasswordModal()" class="btn">Cancel</button>
+        <button (click)="confirmResetPassword()" class="btn btn-primary">Reset Password</button>
+      </div>
+    </div>
+  </div>
+}
